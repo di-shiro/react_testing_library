@@ -24,12 +24,12 @@ class AuthorizedSegmentApiTests(TestCase):
         self.client = APIClient()
         self.client.force_authenticate(self.user) # 強制的に認証を通しておく！
 
-    # getメソッドで segment の一覧が取得できるかのテスト
+    # getメソッドで segmentデータ全ての一覧が取得できるかのテスト
+    # segmentのデータを返すAPIエンドポイントに GETメソッドでアクセスして、segment一覧を取得できれば正常
     def test_2_1_should_get_all_segments(self):
         create_segment(segment_name='SUV')
         create_segment(segment_name='Sedan')
 
-        # segmentのデータを返すAPIエンドポイントに GETメソッドでアクセスして、segment一覧を取得できるかテスト
         # APIからのresponseデータとDB内に保存してあるsegmentのデータを比較する。
         # DjangoのAPI からのresponseは dict型のデータが返される。
         # しかし、DjangoがDB内のデータを取り出す時にオブジェクトで取得するので、それをSerializerでdict型に変換する。
@@ -42,9 +42,14 @@ class AuthorizedSegmentApiTests(TestCase):
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertEqual(res.data, serializer.data)
 
+
     # segmentデータを1つだけ取得できるかのテスト
+    # そのため新規segmentデータを作成後、作成したテストデータ"SUV"のオブジェクトと、
+    # Segment API へアクセスした結果のresponsとを比較している。
     def test_2_2_should_get_single_segment(self):
         segment = create_segment(segment_name="SUV")
+        # ここでは全てのsegmentではなく特定のsegmentデータ1つをピンポイントでアクセスしたいので、
+        # detail_url()を用いて"SUV"へアクセスするためのURLを生成している。
         url = detail_url(segment.id)
         # detail_url()内で使われているreverseでURLを生成すると右の様な形のURLなる。    /api/segments/1/
         print('\n★ reverse生成されたURL:  ', url)
