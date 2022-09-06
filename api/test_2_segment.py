@@ -25,11 +25,10 @@ class AuthorizedSegmentApiTests(TestCase):
         self.client.force_authenticate(self.user) # 強制的に認証を通しておく！
 
     # getメソッドで segmentデータ全ての一覧が取得できるかのテスト
-    # segmentのデータを返すAPIエンドポイントに GETメソッドでアクセスして、segment一覧を取得できるかテスト
+    # segmentのデータを返すAPIエンドポイントに GETメソッドでアクセスして、segment一覧を取得できれば正常
     def test_2_1_should_get_all_segments(self):
         create_segment(segment_name='SUV')
         create_segment(segment_name='Sedan')
-
 
         # APIからのresponseデータとDB内に保存してあるsegmentのデータを比較する。
         # DjangoのAPI からのresponseは dict型のデータが返される。
